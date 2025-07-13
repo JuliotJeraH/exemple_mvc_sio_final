@@ -73,6 +73,18 @@ class LigneCommandeModel {
         $etat->closeCursor();
         return $data;
     }
+
+    public function readById() {
+        $bdd = Connexion::getConnexion();
+        $req = "SELECT * FROM Lignes_commande WHERE id_ligne = :id_ligne";
+        $etat = $bdd->prepare($req);
+        $etat->bindParam(":id_ligne", $this->id_ligne, PDO::PARAM_INT);
+        $etat->execute();
+        $data = $etat->fetch();
+        $etat->closeCursor();
+        return $data;
+    }
+    
     
     
 }

@@ -135,21 +135,39 @@ class PagesController {
 
     public function lignesCommandePage() {
         $commande_model = new CommandeModel();
-        $liste_commandes = $commande_model->readAll();
-
         $ligneCommande_model = new LigneCommandeModel();
-
+    
+        $liste_commandes = [];
+    
+        if (!empty($_POST["nom_produit"])) {
+            $mot_cle = strtolower($_POST["nom_produit"]);
+            $toutes_commandes = $commande_model->readAll();
+    
+            foreach ($toutes_commandes as $commande) {
+                $lignes = $ligneCommande_model->readByCommande($commande["id_commande"]);
+    
+                foreach ($lignes as $ligne) {
+                    if (strpos(strtolower($ligne["nom_produit"]), $mot_cle) !== false) {
+                        $liste_commandes[] = $commande;
+                        break; // On évite les doublons
+                    }
+                }
+            }
+        } else {
+            $liste_commandes = $commande_model->readAll();
+        }
+    
         $totaux_commandes = [];
-
-        foreach($liste_commandes as $commande) {
+    
+        foreach ($liste_commandes as $commande) {
             $lignes = $ligneCommande_model->readByCommande($commande["id_commande"]);
             $total = 0;
-            foreach($lignes as $ligne) {
+            foreach ($lignes as $ligne) {
                 $total += $ligne["quantite"] * $ligne["prix_produit"];
             }
             $totaux_commandes[$commande["id_commande"]] = $total;
         }
-
+    
         $data_page = array(
             "title" => "Page des lignes de commande",
             "view" => "views/pages/LignesCommandePage.php",
@@ -160,5 +178,6 @@ class PagesController {
         $util = new Utilities();
         $util->drawPage($data_page);
     }
+    
 }
 ?>

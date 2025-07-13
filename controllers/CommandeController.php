@@ -124,6 +124,31 @@
         
             require("views/pages/LignesCommandePage.php");
         }
+
+        public function modifyCommande() {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $id_commande = intval($_POST['id_commande']);
+                $date_commande = $_POST['date_commande'];
+                // Récupère d'autres champs modifiables si besoin
+        
+                $this->commande_model = new CommandeModel();
+                $this->commande_model->id_commande = $id_commande;
+                $this->commande_model->date_commande = $date_commande;
+                // Assigne d'autres propriétés modifiables
+        
+                $success = $this->commande_model->update();
+        
+                if ($success) {
+                    header("Location: index.php?page=lignes_commande_page");
+                    exit;
+                } else {
+                    // Gérer l'erreur, afficher un message ou rediriger ailleurs
+                    echo "Erreur lors de la modification";
+                }
+            }
+        }
+        
+        
         
         
         

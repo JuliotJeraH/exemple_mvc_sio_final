@@ -48,15 +48,13 @@ class CommandeModel {
             return false;
         }
     }
+    
     public function update() {
         try {
             $bdd = Connexion::getConnexion();
-            $req = "UPDATE Commandes SET id_client = :id_client, date_commande = :date_commande, est_livre = :est_livre, id_livreur = :id_livreur WHERE id_commande = :id_commande";
+            $req = "UPDATE Commandes SET date_commande = :date_commande WHERE id_commande = :id_commande";
             $etat = $bdd->prepare($req);
-            $etat->bindParam(":id_client", $this->id_client);
             $etat->bindParam(":date_commande", $this->date_commande);
-            $etat->bindParam(":est_livre", $this->est_livre);
-            $etat->bindParam(":id_livreur", $this->id_livreur);
             $etat->bindParam(":id_commande", $this->id_commande);
             $etat->execute();
             $etat->closeCursor();
@@ -65,6 +63,8 @@ class CommandeModel {
             return false;
         }
     }
+    
+
     public function delete() {
         try {
             $bdd = Connexion::getConnexion();

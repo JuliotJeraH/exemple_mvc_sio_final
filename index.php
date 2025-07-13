@@ -272,6 +272,12 @@
                 header("Location: lignes_commande_page");
             }
             break;
+
+        case "modify_commande":
+            $commandeController = new CommandeController();
+            $commandeController->modifyCommande();
+            break;
+            
             
         
         default:
