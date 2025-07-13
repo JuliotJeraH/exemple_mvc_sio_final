@@ -1,24 +1,26 @@
-<div class="modal fade" id="modifyCommandeModal<?php echo $une_commande["id_commande"]; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="modifyCommandeModal<?php echo $une_commande['id_commande']; ?>" tabindex="-1" aria-labelledby="modifyCommandeLabel<?php echo $une_commande['id_commande']; ?>" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modification d'une commande</h1>
-      </div>
-      <div class="modal-body">
-        <form action="modify_commande" method="post">
-          <input type="hidden" value="<?php echo $une_commande["id_commande"]; ?>" name="id_commande">  
+      <form action="modify_commande" method="post">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modifyCommandeLabel<?php echo $une_commande['id_commande']; ?>">Modifier Commande #<?php echo $une_commande['id_commande']; ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id_commande" value="<?php echo $une_commande['id_commande']; ?>">
+          <!-- Ici les champs modifiables, exemple : -->
           <div class="mb-3">
-            <label for="date_commande" class="form-label">Date de la commande : </label>
-            <input type="date" id="date_commande" name="date_commande" class="form-control" value="<?php echo $une_commande["date_commande"]; ?>" required>
+            <label for="date_commande_<?php echo $une_commande['id_commande']; ?>" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date_commande_<?php echo $une_commande['id_commande']; ?>" name="date_commande" value="<?php echo htmlspecialchars($une_commande['date_commande']); ?>">
           </div>
-          <div class="mb-3">
-            <label for="fournisseur_id" class="form-label">Fournisseur : </label>
-            <select id="fournisseur_id" name="fournisseur_id" class="form-select" required>
-              <?php foreach($fournisseurs as $fournisseur): ?>
-                <option value="<?php echo $fournisseur["id_fournisseur"]; ?>" <?php if($fournisseur["id_fournisseur"] == $une_commande["fournisseur_id"]) echo "selected"; ?>>
-                  <?php echo $fournisseur["nom_fournisseur"]; ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          
+          <!-- Ajoute les autres champs à modifier ici -->
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

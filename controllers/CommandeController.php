@@ -63,5 +63,70 @@
                 header("Location: accueil");
             }
         }
+        public function deleteCommande($id_commande) {
+            $this->commande_model = new CommandeModel();
+            $this->commande_model->id_commande = $id_commande;
+        
+            // Supprimer les lignes de commande avant la commande (intégrité)
+            $ligneCommande_model = new LigneCommandeModel();
+            $lignes = $ligneCommande_model->readByCommande($id_commande);
+            foreach($lignes as $ligne) {
+                $ligneCommande_model->id_ligne = $ligne["id_ligne"];
+                $ligneCommande_model->delete();
+            }
+        
+            $success = $this->commande_model->delete();
+        
+            if($success) {
+                header("Location: lignes_commande_page");
+            } else {
+                header("Location: lignes_commande_page");
+            }
+        }
+
+        public function lignes_commande_page() {
+            require_once("models/CommandeModel.php");
+            $commandeModel = new CommandeModel();
+        
+            $ligneModel = new LigneCommandeModel(); // nécessaire ici aussi
+            $commandes = [];
+        
+            if (!empty($_POST["nom_produit"])) {
+                $nom_recherche = trim($_POST["nom_produit"]);
+                $toutes_commandes = $commandeModel->readAll();
+        
+                foreach ($toutes_commandes as $commande) {
+                    $lignes = $ligneModel->readByCommande($commande["id_commande"]);
+                    foreach ($lignes as $ligne) {
+                        if (stripos($ligne["nom_produit"], $nom_recherche) !== false) {
+                            $commandes[] = $commande;
+                            break; // on ajoute la commande une seule fois
+                        }
+                    }
+                }
+            } else {
+                $commandes = $commandeModel->readAll();
+            }
+        
+            // Calcul des totaux
+            $totaux = [];
+            foreach ($commandes as $cmd) {
+                $lignes = $ligneModel->readByCommande($cmd["id_commande"]);
+                $total = 0;
+                foreach ($lignes as $ligne) {
+                    $total += $ligne["prix_produit"] * $ligne["quantite"];
+                }
+                $totaux[$cmd["id_commande"]] = $total;
+            }
+        
+            $liste_commandes = $commandes;
+            $totaux_commandes = $totaux;
+        
+            require("views/pages/LignesCommandePage.php");
+        }
+        
+        
+        
+        
     }
 ?>

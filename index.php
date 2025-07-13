@@ -253,6 +253,26 @@
             $pageController = new PagesController();
             $pageController->lignesCommandePage();
             break;
+
+        case "delete_commande":
+            if(session_status() != 2) {
+                session_start();
+                session_destroy();
+            }
+            if(isset($_POST["id_commande"])) {
+                $id_commande = $_POST["id_commande"];
+                if(empty($id_commande)) {
+                    header("Location: lignes_commande_page");
+                    exit;
+                }
+                require_once("controllers/CommandeController.php");
+                $commande_control = new CommandeController();
+                $commande_control->deleteCommande($id_commande);
+            } else {
+                header("Location: lignes_commande_page");
+            }
+            break;
+            
         
         default:
             if(session_status() != 2) {

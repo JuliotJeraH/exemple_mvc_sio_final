@@ -59,5 +59,21 @@ class LigneCommandeModel {
             return false;
         }
     }
+
+    public function readByCommande($id_commande) {
+        $bdd = Connexion::getConnexion();
+        $req = "SELECT lc.id_ligne, lc.quantite, p.nom_produit, p.prix_produit
+                FROM Lignes_commande lc
+                JOIN Produits p ON lc.id_produit = p.id_produit
+                WHERE lc.id_commande = :id_commande";
+        $etat = $bdd->prepare($req);
+        $etat->bindParam(":id_commande", $id_commande, PDO::PARAM_INT);
+        $etat->execute();
+        $data = $etat->fetchAll();
+        $etat->closeCursor();
+        return $data;
+    }
+    
+    
 }
 ?>

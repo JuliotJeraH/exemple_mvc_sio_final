@@ -20,6 +20,15 @@ class CommandeModel {
         $etat->closeCursor();
         return $data;
     }
+
+    public function read($id) {
+        $stmt = $this->conn->prepare("SELECT c.*, cl.nom AS nom_client FROM commande c JOIN client cl ON c.id_client = cl.id_client WHERE c.id_commande = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc(); // retourne un seul résultat
+    }
+    
     
     
     
