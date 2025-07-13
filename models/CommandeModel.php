@@ -1,0 +1,73 @@
+<?php
+require_once("Connexion.php");
+class CommandeModel {
+    public $id_commande;
+    public $id_client;
+    public $date_commande;
+    public $est_livre;
+    public $id_livreur;
+    
+
+    public function readAll() {
+        $bdd = Connexion::getConnexion();
+        $req = "SELECT Commandes.*, Clients.nom_client 
+                FROM Commandes 
+                JOIN Clients ON Clients.id_client = Commandes.id_client 
+                ORDER BY Commandes.date_commande DESC";
+        $etat = $bdd->prepare($req);
+        $etat->execute();
+        $data = $etat->fetchAll();
+        $etat->closeCursor();
+        return $data;
+    }
+    
+    
+    
+    
+
+    public function create() {
+        try {
+            $bdd = Connexion::getConnexion();
+            $req = "INSERT INTO Commandes VALUES (NULL, :id_client, NOW(), 0, :id_livreur)";
+            $etat = $bdd->prepare($req);
+            $etat->bindParam(":id_client", $this->id_client);
+            $etat->bindParam(":id_livreur", $this->id_livreur);
+            $etat->execute();
+            $etat->closeCursor();
+            return true;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+    public function update() {
+        try {
+            $bdd = Connexion::getConnexion();
+            $req = "UPDATE Commandes SET id_client = :id_client, date_commande = :date_commande, est_livre = :est_livre, id_livreur = :id_livreur WHERE id_commande = :id_commande";
+            $etat = $bdd->prepare($req);
+            $etat->bindParam(":id_client", $this->id_client);
+            $etat->bindParam(":date_commande", $this->date_commande);
+            $etat->bindParam(":est_livre", $this->est_livre);
+            $etat->bindParam(":id_livreur", $this->id_livreur);
+            $etat->bindParam(":id_commande", $this->id_commande);
+            $etat->execute();
+            $etat->closeCursor();
+            return true;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+    public function delete() {
+        try {
+            $bdd = Connexion::getConnexion();
+            $req = "DELETE FROM Commandes WHERE id_commande = :id_commande";
+            $etat = $bdd->prepare($req);
+            $etat->bindParam(":id_commande", $this->id_commande);
+            $etat->execute();
+            $etat->closeCursor();
+            return true;
+        } catch(Exception $e) {
+            return false;
+        }
+    }
+}
+?>
